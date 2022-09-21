@@ -6,5 +6,12 @@ public class Student
     
     public string Name { get; set; }
     
-    
+    public string Email{ get; set; }
+
+    public Student(int id, string name, string email)
+    {
+        ID = id;
+        Name = name;
+        Email = email;
+    }
 }
