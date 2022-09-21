@@ -17,7 +17,30 @@ public class StudentService
     {
         if (student == null)
             throw new ArgumentNullException();
+        ThrowsIfInvalidStudentProperty(student);
         repository.Add(student);
-        
+    }
+
+    private void ThrowsIfInvalidStudentProperty(Student student)
+    {
+        if (student.ID <= 0)
+        {
+            throw new ArgumentException("Invalid ID: ID must be positive");
+        }
+
+        if (student.Name == null)
+        {
+            throw new ArgumentException("Invalid Name: Name is missing");
+        }
+
+        if (student.Name == "")
+        {
+            throw new ArgumentException("Invalid Name: Name cannot be empty");
+        }
+
+        if (student.Email == "")
+        {
+            throw new ArgumentException("Invalid email: Email cannot be empty");
+        }
     }
 }

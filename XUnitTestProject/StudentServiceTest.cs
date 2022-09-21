@@ -78,5 +78,35 @@ namespace XUnitTestProject
             Assert.Empty(students);
             mockRepository.Verify(r => r.Add(null),Times.Never);
         }
+
+        [Theory]
+        [InlineData(-1, "Name", "Email", "Invalid ID: ID must be positive")]
+        [InlineData(0, "Name", "Email", "Invalid ID: ID must be positive")]
+        [InlineData(1, null, "Email", "Invalid Name: Name is missing")]
+        [InlineData(1, "", "Email", "Invalid Name: Name cannot be empty")]
+        [InlineData(1, "Name", "", "Invalid email: Email cannot be empty")]
+        public void AddStudentWithInvalidPropertyExpectArgumentException(int id, string name, string email,string expectedMessage)
+        {
+            //Mock data
+            List<Student> students = new List<Student>();
+            //Arrange
+            Mock<IStudentRepository> mockRepository = new Mock<IStudentRepository>();
+            mockRepository.Setup(r => r.Add(It.IsAny<Student>())).Callback<Student>(s => students.Add(s));
+            IStudentRepository repository = mockRepository.Object;
+            
+            StudentService service = new StudentService(repository);
+
+            Student student = new Student(id, name, email);
+            
+            //Act
+
+            Action ac = () => service.AddStudent(student);
+            
+            // Assert
+            var ex = Assert.Throws<ArgumentException>(ac);
+            Assert.Equal(expectedMessage, ex.Message);
+            Assert.Empty(students);
+            mockRepository.Verify(r => r.Add(student),Times.Never);
+        }
     }
 }
